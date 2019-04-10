@@ -1,15 +1,21 @@
-import { SET_MODAL } from './ui_actions'
+import { SET_SHOW_STATS, SET_SUMMONER_DATA } from './ui_actions'
 
 const initialUIState = {
-  showModal: false
+  showStats: false,
+  summonerData: {},
 }
 
 const uiState = (lastState = initialUIState, action) => {
   switch (action.type) {
-    case SET_MODAL:
+    case SET_SHOW_STATS:
       return {
         ...lastState,
-        showModal: action.payload
+        showStats: action.payload
+      }
+    case SET_SUMMONER_DATA:
+      return {
+        ...lastState,
+        summonerData: action.payload
       }
     default:
       return lastState
