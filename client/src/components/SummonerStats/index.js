@@ -27,7 +27,7 @@ const SummonerStatsContainer = styled.main`
   justify-content: center;
   grid-template-columns: 1fr;
   grid-auto-rows: max-content;
-  grid-gap: 0.5rem;
+  grid-gap: 0.4rem;
   width: max-content;
 `
 

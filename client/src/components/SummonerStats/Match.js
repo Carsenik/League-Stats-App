@@ -1,51 +1,79 @@
 import React from 'react'
 import styled from 'styled-components'
+import Champion from './Champion'
+import SmallChamp from './SmallChamp'
 import Item from './Item'
 import Icon from './Icon'
 
-const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
-    const { stats, championId } = matchStats
+const calcGameStart = (date) => {
+    var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    var firstDate = new Date(Date.now());
+    var secondDate = new Date(date);
 
+    var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
+    return `${diffDays > 1 ? diffDays : 'a'} days ago`
+}
+const calcDuration = (seconds) => {
+    let minutes = Math.floor(seconds / 60)
+    let remainder = seconds % 60
+    return `${minutes}m ${remainder}s`
+
+}
+
+const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
+    const { stats, championId, timeline } = matchStats
+    const maxLength = 10
     const showAchievement = () => {
         if (stats.unrealKills > 0) {
-        return 'Unreal Kill'
+        return <Tag>Unreal Kill</Tag>
         } else if (stats.pentaKills > 0) {
-        return 'Penta Kill'
+        return <Tag>Penta Kill</Tag>
         } else if (stats.quadraKills > 0) {
-        return 'Quadra Kill'
+        return <Tag>Quadra Kill</Tag>
         } else if (stats.tripleKills > 0) {
-        return 'Triple Kill'
+        return <Tag>Triple Kill</Tag>
         } else if (stats.doubleKills > 0) {
-        return 'Double Kill'
+            return <Tag>Double Kill</Tag>
         } else {
-        return
+            return null
         }
     }
 
     return (
         <MatchContainer win={stats.win}>
-        <ChampContainer>
+        <GameContainer>
             <div>
-            <p>{gameType}</p>
-            <p>{`${Date.now() - gameCreation} ago`}</p>
-            <p>____</p>
-            <p>{stats.win ? 'Victory' : 'Defeat'}</p>
-            <p>{gameDuration}</p>
+                <p>{gameType}</p>
+                <p>{calcGameStart(gameCreation)}</p>
+                <p>------</p>
+                <p>{stats.win ? 'Victory' : 'Defeat'}</p>
+                <p>{calcDuration(gameDuration)}</p>
             </div>
-            <div>{championId}</div>
-        </ChampContainer>
+            <ChampContainer>
+                <Champ>
+                    <Champion champNumber={stats.item0} />
+                    <Abilities>
+                        <Item itemNumber={stats.item1} />
+                        <Item itemNumber={stats.item2} />
+                        <Item itemNumber={stats.item3} />
+                        <Item itemNumber={stats.item3} />
+                    </Abilities>
+                </Champ>
+                <p>Twitch</p>
+            </ChampContainer>
+        </GameContainer>
         <KDAContainer>
+            <div>
+                <span>{stats.kills}</span> / <Deaths>{stats.deaths}</Deaths> / <span>{stats.assists}</span>
+            </div>
             <p>
-            {stats.kills} / {stats.deaths} / {stats.assists}
+                {(((stats.kills + stats.assists) / stats.deaths)).toFixed(2)}:1 KDA
             </p>
-            <p>
-            {((stats.kills + stats.deaths + stats.assists) / 3).toFixed(2)}:1 KDA
-            </p>
-            <p>{showAchievement()}</p>
+            {showAchievement()}
         </KDAContainer>
         <LevelContainer>
-            <p>Level 18</p>
-            <p>299(6.8) CS</p>
+            <p>Level {stats.champLevel}</p>
+                <p>{stats.totalMinionsKilled + stats.neutralMinionsKilled}(9.6) CS</p>
             <p>P/Kill 35%</p>
             <p>Tier Average</p>
             <p>{matchStats.highestAchievedSeasonTier}</p>
@@ -61,16 +89,20 @@ const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
                 <Item itemNumber={stats.item6}/>
                 <Icon type='items' win={stats.win} />
             </Items>
-            <p>Control Ward</p>
+            <p>Control Ward 3</p>
         </ItemsContainer>
         <TeamsContainer>
             <Team>
             {teams.team1.map(member => {
                 return (
                 <TeamMember key={member.championId}>
-                    <p>{member.championId}</p>
+                    <SmallChamp champNumber={stats.item0} me={member.pid === matchStats.participantId} />
                     <MemberName me={member.pid === matchStats.participantId}>
-                    {member.summonerName}
+                        {
+                            member.summonerName.length > maxLength
+                            ? `${member.summonerName.substring(0, maxLength)}...`
+                            : member.summonerName
+                        }
                     </MemberName>
                 </TeamMember>
                 )
@@ -80,9 +112,13 @@ const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
             {teams.team2.map(member => {
                 return (
                 <TeamMember key={member.championId}>
-                    <p>{member.championId}</p>
+                    <SmallChamp champNumber={stats.item0} me={member.pid === matchStats.participantId} />
                     <MemberName me={member.pid === matchStats.participantId}>
-                    {member.summonerName}
+                        {
+                            member.summonerName.length > maxLength
+                                ? `${member.summonerName.substring(0, maxLength)}...`
+                                : member.summonerName
+                        }
                     </MemberName>
                 </TeamMember>
                 )
@@ -99,7 +135,7 @@ export default Match
 const MatchContainer = styled.div`
     min-width: 100%;
     display: grid;
-    grid-template-columns: 5rem 3rem 3rem 4rem 8rem 1rem;
+    grid-template-columns: max-content 3rem 3rem 4rem 7rem 1rem;
     grid-gap: 5px;
     background-color: ${props => (props.win ? '#a3cfec' : '#e2b6b3')};
     border: ${props => (props.win ? '1px solid #99b9ce' : '1px solid #cda7a6')};
@@ -107,11 +143,29 @@ const MatchContainer = styled.div`
     box-shadow: var(--shadow-border);
 `
 
-const ChampContainer = styled.div`
+const GameContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    padding: 5px 0;
+`
+
+const ChampContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+const Champ = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+`
+
+const Abilities = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
 `
 
 const KDAContainer = styled.div`
@@ -119,6 +173,24 @@ const KDAContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-size: .5rem;
+    & span {
+        font-weight: bold;
+    }
+`
+
+const Deaths = styled.span`
+    color: red;
+`
+
+const Tag = styled.div`
+    width: max-content;
+    background-color: #e4756f;
+    color: white;
+    border: 1px solid red;
+    font-size: .4rem;
+    border-radius: 10px;
+    padding: 2px 5px;
 `
 
 const LevelContainer = styled.div`
