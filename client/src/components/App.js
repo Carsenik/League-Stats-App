@@ -42,6 +42,7 @@ const GlobalStyle = createGlobalStyle`
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin: 0;
     }
 
     p {
@@ -68,7 +69,8 @@ const GlobalStyle = createGlobalStyle`
 
 `
 
-const AppWrapper = styled.div``
+const AppWrapper = styled.div`
+`
 const Header = styled.h1`
   text-align: center;
   color: #333;

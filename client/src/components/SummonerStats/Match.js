@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import Item from './Item'
+import Icon from './Icon'
 
 const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
     const { stats, championId } = matchStats
@@ -45,18 +47,19 @@ const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
             <p>Level 18</p>
             <p>299(6.8) CS</p>
             <p>P/Kill 35%</p>
-            <p>Match MMR 2500</p>
+            <p>Tier Average</p>
+            <p>{matchStats.highestAchievedSeasonTier}</p>
         </LevelContainer>
         <ItemsContainer>
             <Items>
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item0}.png`} alt={ stats.item0 } />
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item1}.png`} alt={ stats.item1 } />
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item2}.png`} alt={ stats.item2 } />
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item3}.png`} alt={ stats.item3 } />
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item4}.png`} alt={ stats.item4 } />
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item5}.png`} alt={ stats.item5 } />
-                <img src={`https://ddragon.leagueoflegends.com/cdn/9.4.1/img/item/${stats.item6}.png`} alt={ stats.item6 } />
-                <p><img src='http://ddragon.leagueoflegends.com/cdn/5.5.1/img/ui/items.png' alt='items icon' /></p>
+                <Item itemNumber={stats.item0}/>
+                <Item itemNumber={stats.item1}/>
+                <Item itemNumber={stats.item2}/>
+                <Item itemNumber={stats.item3}/>
+                <Item itemNumber={stats.item4}/>
+                <Item itemNumber={stats.item5}/>
+                <Item itemNumber={stats.item6}/>
+                <Icon type='items' win={stats.win} />
             </Items>
             <p>Control Ward</p>
         </ItemsContainer>
@@ -64,24 +67,24 @@ const Match = ({ matchStats, gameCreation, gameDuration, gameType, teams }) => {
             <Team>
             {teams.team1.map(member => {
                 return (
-                <div key={member.championId}>
+                <TeamMember key={member.championId}>
                     <p>{member.championId}</p>
                     <MemberName me={member.pid === matchStats.participantId}>
                     {member.summonerName}
                     </MemberName>
-                </div>
+                </TeamMember>
                 )
             })}
             </Team>
             <Team>
             {teams.team2.map(member => {
                 return (
-                <div key={member.championId}>
+                <TeamMember key={member.championId}>
                     <p>{member.championId}</p>
                     <MemberName me={member.pid === matchStats.participantId}>
                     {member.summonerName}
                     </MemberName>
-                </div>
+                </TeamMember>
                 )
             })}
             </Team>
@@ -96,7 +99,7 @@ export default Match
 const MatchContainer = styled.div`
     min-width: 100%;
     display: grid;
-    grid-template-columns: repeat(6, max-content);
+    grid-template-columns: 5rem 3rem 3rem 4rem 8rem 1rem;
     grid-gap: 5px;
     background-color: ${props => (props.win ? '#a3cfec' : '#e2b6b3')};
     border: ${props => (props.win ? '1px solid #99b9ce' : '1px solid #cda7a6')};
@@ -135,10 +138,6 @@ const Items = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 2px;
-    & img {
-        width: 25px;
-        height: 25px;
-    }
 `
 
 const TeamsContainer = styled.div`
@@ -151,6 +150,12 @@ const TeamsContainer = styled.div`
 const Team = styled.div`
     display: flex;
     flex-direction: column;
+`
+
+const TeamMember = styled.div`
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    grid-gap: 5px;
 `
 
 const MemberName = styled.p`
