@@ -1,3 +1,3 @@
 module.exports = {
-  riotClientID: ''
+  riotClientID: process.env.RIOT_CLIENT_KEY
 }

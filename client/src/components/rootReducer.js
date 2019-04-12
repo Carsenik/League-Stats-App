@@ -4,7 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import uiState from './ui_store/ui_reducer'
 
 const rootReducer = combineReducers({
-  ui: uiState
+    ui: uiState
 })
 
 export const store = createStore(rootReducer, {}, composeWithDevTools(applyMiddleware(ReduxThunk)))

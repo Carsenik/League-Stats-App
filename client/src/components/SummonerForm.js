@@ -5,47 +5,42 @@ import styled from 'styled-components'
 import { getSummonerData } from './ui_store/ui_actions'
 
 const SummonerForm = props => {
-  const {getSummonerData} = props
-  const [text, updateText] = useState('')
-	const textRef = useRef()
+    const {getSummonerData} = props
+    const [text, updateText] = useState('')
+    const textRef = useRef()
 
-	useLayoutEffect(() => {
-		textRef.current = text
-  })
+    useLayoutEffect(() => {
+        textRef.current = text
+    })
 
-  const handleSubmit = useCallback(e => {
-    e.preventDefault()
-		e.stopPropagation()
-    const currentText = textRef.current
-    console.log(currentText)
-    getSummonerData(currentText);
-    updateText('')
-  }, [textRef])
-  
-  return (
-    <FormContainer onSubmit={e => handleSubmit(e)}>
-      <Input
-				type='search'
-				placeholder="Summoner Name"
-				value={text}
-				onChange={e => updateText(e.target.value)} 
-        onKeyPress={e => (e.key === 'Enter' ? handleSubmit(e) : null)} />
-    </FormContainer>
-  )
+    const handleSubmit = useCallback(e => {
+        e.preventDefault()
+        e.stopPropagation()
+        const currentText = textRef.current
+        getSummonerData(currentText);
+        updateText('')
+    }, [textRef])
+
+    return (
+        <FormContainer onSubmit={e => handleSubmit(e)}>
+        <Input
+            type='search'
+            placeholder="Summoner Name"
+            value={text}
+            onChange={e => updateText(e.target.value)}
+            onKeyPress={e => (e.key === 'Enter' ? handleSubmit(e) : null)} />
+        </FormContainer>
+    )
 }
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      getSummonerData
-    },
-    dispatch
-  )
+const mapDispatchToProps = dispatch => bindActionCreators({ getSummonerData }, dispatch)
 
 export default connect(null, mapDispatchToProps)(SummonerForm)
 
 const FormContainer = styled.form`
-  display: flex;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2rem;
 `
 
 const Input = styled.input.attrs({
@@ -54,14 +49,14 @@ const Input = styled.input.attrs({
 	background-color: transparent;
 	border-style: none;
 	border-bottom-style: solid;
-	border-bottom-color: #888;
-	flex: 1;
-	font-size: 2rem;
-	height: 3rem;
+    border-bottom-color: #555;
+    text-align: center;
+    color: #333;
+	font-size: 1rem;
+	height: 2rem;
 	line-height: 3rem;
-	margin-right: 1rem;
 	&:focus {
-		border-bottom-color: var(--comc-red);
+		border-bottom-color: red;
 		outline: none;
 	}
 `

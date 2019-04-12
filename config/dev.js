@@ -1,4 +1,3 @@
 module.exports = {
-  riotGamesClientKey: 'RGAPI-e9fd8e2c-f147-45e5-8ad9-fb9ade0c1c77'
-  
+  riotGamesClientKey: 'RGAPI-6c8d8625-0da9-4133-a35a-8444a3918e2b'
 }
