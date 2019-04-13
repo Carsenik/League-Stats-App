@@ -48,7 +48,7 @@ const getMatchData = async (matchId, accountID) => {
         keys.riotGamesClientKey
     }`
     const matchRes = await axios.get(url)
-    
+
     const myPID = matchRes.data.participantIdentities.find(identity => {
         if (identity.player.accountId === accountID) {
             return identity.participantId
@@ -65,6 +65,7 @@ const getMatchData = async (matchId, accountID) => {
     const team2 = getTeam(matchRes.data, 5, 10)
 
     return {
+        matchId,
         gameType: matchRes.data.gameType,
         gameCreation: matchRes.data.gameCreation,
         gameDuration: matchRes.data.gameDuration,
